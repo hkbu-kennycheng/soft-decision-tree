@@ -41,7 +41,7 @@ class InnerNode():
             self.right = LeafNode(self.args)
 
     def forward(self, x):
-        return(F.sigmoid(self.beta*self.fc(x)))
+        return nn.sigmoid(self.beta*self.fc(x))
     
     def select_next(self, x):
         prob = self.forward(x)
@@ -193,7 +193,7 @@ class SoftDecisionTree(nn.Module):
             if batch_idx % self.args.log_interval == 0:
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}, Accuracy: {}/{} ({:.4f}%)'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.data[0],
+                    100. * batch_idx / len(train_loader), loss.data,
                     correct, len(data),
                     accuracy))
 
