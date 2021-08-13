@@ -1,10 +1,8 @@
 import os
 import time
 
-import pickle
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 
@@ -226,14 +224,8 @@ class SoftDecisionTree(nn.Module):
         self.test_acc.append(accuracy)
 
         if accuracy > self.best_accuracy:
-            self.save_best('./result')
+            self.save_best('./best_model.pt')
             self.best_accuracy = accuracy
 
     def save_best(self, path):
-        try:
-            os.makedirs('./result')
-        except:
-            print('directory ./result already exists')
-
-        with open(os.path.join(path, 'best_model.pkl'), 'wb') as output_file:
-            pickle.dump(self, output_file)
+        torch.save(self.state_dict(), path)
