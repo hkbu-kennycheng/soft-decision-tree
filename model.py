@@ -25,6 +25,7 @@ class InnerNode():
         self.lmbda = self.args.lmbda * 2 ** (-depth)
         self.build_child(depth)
         self.penalties = []
+        self.sigmoid = nn.Sigmoid()
 
     def reset(self):
         self.leaf_accumulator = []
@@ -41,7 +42,7 @@ class InnerNode():
             self.right = LeafNode(self.args)
 
     def forward(self, x):
-        return nn.sigmoid(self.beta*self.fc(x))
+        return self.sigmoid(self.beta*self.fc(x))
     
     def select_next(self, x):
         prob = self.forward(x)
@@ -78,10 +79,10 @@ class LeafNode():
             self.param = self.param.cuda()
         self.param = nn.Parameter(self.param)
         self.leaf = True
-        self.softmax = nn.Softmax()
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self):
-        return(self.softmax(self.param.view(1,-1)))
+        return self.softmax(self.param.view(1,-1))
 
     def reset(self):
         pass
