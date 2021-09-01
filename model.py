@@ -146,20 +146,28 @@ class SoftDecisionTree(nn.Module):
 
     def collect_parameters(self):
         nodes = [self.root]
+        leafIndex = 0
+        betaIndex = 0
+        pList = []
         self.module_list = nn.ModuleList()
-        self.param_list = nn.ParameterList()
+        #self.param_list = nn.ParameterList()
         while nodes:
             node = nodes.pop(0)
             if node.leaf:
                 param = node.param
-                self.param_list.append(param)
+                #self.param_list.append(param)
+                pList.append((f'leaf_{leafIndex}', param))
+                leafIndex += 1
             else:
                 fc = node.fc
                 beta = node.beta
                 nodes.append(node.right)
                 nodes.append(node.left)
-                self.param_list.append(beta)
+                #self.param_list.append(beta)
+                pList.append((f'beta_{betaIndex}', beta))
+                betaIndex += 1
                 self.module_list.append(fc)
+        self.param_dict = nn.ParameterDict(pList)
 
     def train_(self, train_loader, epoch):
         self.train()
